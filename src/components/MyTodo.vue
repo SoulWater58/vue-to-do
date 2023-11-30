@@ -1,18 +1,15 @@
 <script setup>
 import { computed, reactive, ref } from 'vue';
+import { store } from '../store/store.js'
 
 const text = ref('')
 const num = ref('Легко')
 
 const nameTable = ref('')
 
-const todo = reactive({
-    list: [{text: 'qwerty', table: 'Легко'}, {text: 'hello', table: 'Не, ну это полная...'}]
-})
+const todo = store.storeTodo
 
-const table = reactive({
-    list: [{text: 'Легко'}, {text: 'Я просто не подготовился'}, {text: 'Не, ну это полная...'}]
-})
+const table = store.storeTable
 
 const tableList = computed(() => table.list)
 
@@ -110,6 +107,12 @@ function initTable() {
     
         item.addEventListener('dragend', (event) => {
             event.target.classList.remove('selected')
+
+            todo.list.forEach(item1 => {
+                if (item1.text === event.target.dataset.value) {
+                    item1.table = item.dataset.value
+                }
+            });
         })
 
         item.addEventListener('dragover', (event) => {
@@ -129,6 +132,12 @@ function initLastTable() {
 
     list[index].addEventListener('dragend', (event) => {
         event.target.classList.remove('selected')
+
+        todo.list.forEach(item => {
+            if (item.text === event.target.dataset.value) {
+                item.table = list[index].dataset.value
+            }
+        });
     })
 
     list[index].addEventListener('dragover', (event) => {
@@ -155,9 +164,9 @@ function initLastTable() {
         <button class="top__button" @click="addTable">Добавить</button>
     </div>
     <div class="list-block">
-        <div class="list" v-for="(item, i) in tableList" :key="i">
+        <div class="list" v-for="(item, i) in tableList" :key="i" :data-value="item.text">
             <h4>{{ item.text }}</h4>
-            <div class="list-item" v-for="(item, i) in todo.list.filter(list => list.table === item.text)" :key="i" draggable="true">
+            <div class="list-item" v-for="(item, i) in todo.list.filter(list => list.table === item.text)" :key="i" :data-value="item.text" draggable="true">
                 <div class="list-item__text">{{ item.text }}</div>
                 <button class="list-item__del" @click="deleteTask(item.text)">X</button>
             </div>
