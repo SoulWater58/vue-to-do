@@ -1,6 +1,14 @@
 <script setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { store } from '../store/store.js'
+import { useTodoStore } from '../store/todo.js'
+import { storeToRefs } from 'pinia'
+
+const storePinia = useTodoStore()
+
+const { count, doubleCount } = storeToRefs(storePinia)
+
+const { increment } = storePinia
 
 const text = ref('')
 const num = ref('Легко')
@@ -173,9 +181,19 @@ function initLastTable() {
             <button class="top__button list__button" @click="deleteTable(item.text)">Удалить таблицу</button>
         </div>
     </div>
+    <button class="wef" @click="increment">{{ doubleCount }}</button>
 </template>
 
 <style scoped>
+
+.wef {
+    border: 1px solid #000;
+    transition: 300ms;
+}
+
+.wef:hover {
+    background-color: #914242;
+}
 
 h2 {
     color: rgb(18, 0, 48);
